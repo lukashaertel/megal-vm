@@ -1,0 +1,33 @@
+module Main
+
+/**
+ * Programs that are used to compile the program
+ */
+annotationProcessor: Program = "apt"
+javaCompiler: Program = "javac"
+
+/**
+ * Program files
+ */
+javaFiles: Dir = "./src/main/java"
+
+/**
+ * Status main initializes, then Post APT will follow
+ */
+Main |>> PostAPT
+
+submodule PostAPT
+    classFiles: Dir = "./build/generated/source/apt/main"
+        elementOf JVM.ClassFiles
+        uses JVM.Annotations
+        correspondsTo javaFiles
+
+/**
+ * Post APT terminates in Post Build
+ */
+PostAPT >>| PostBuild
+
+submodule PostBuild
+    classFiles: Dir = "./build/classes/main"
+        elementOf JVM.ClassFiles
+        correspondsTo javaFiles

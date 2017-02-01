@@ -1,0 +1,6 @@
+module Main
+
+import A
+import B where
+    x sub a
+    y sub b

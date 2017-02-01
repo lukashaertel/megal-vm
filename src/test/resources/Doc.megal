@@ -1,0 +1,14 @@
+module Main
+A b C
+
+/*
+ * Main documentation
+ */
+C b A
+submodule State1
+    A b C
+    /*
+     * Submodule documentation
+     */
+    C b A
+

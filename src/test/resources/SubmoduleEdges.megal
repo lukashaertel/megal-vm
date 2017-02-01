@@ -1,0 +1,5 @@
+module Main
+submodule State1
+    A b C
+    submodule Substate1
+        C b A

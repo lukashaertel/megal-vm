@@ -1,0 +1,16 @@
+conformsTo : Artifact * Artifact
+conformsTo : XML * XSD
+
+{
+    ?c : conformstTo
+    ?x domainOf ?c
+    ?y rangeOf ?c
+
+    ?x type Language
+    ?y type Language
+
+    -->
+
+    p : Plugin
+    p partOf ConformsTo
+}
