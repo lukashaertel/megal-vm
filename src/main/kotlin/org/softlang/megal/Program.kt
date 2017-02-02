@@ -9,18 +9,22 @@ import org.wasabifx.wasabi.app.AppServer
  */
 fun main(args: Array<String>) {
     // Parse program arguments
-    val programArgs = ProgramArgs(args)
+    ProgramArgs(args).apply {
+        // Print help message
+        if (help)
+            printHelp(System.out)
 
-    // Run the appropriate program
-    if (programArgs.server) {
-        // Run server on args
-        runServer(programArgs)
-    } else {
-        // Print help if no files specified, otherwise run standalone
-        if (programArgs.files.isEmpty())
-            programArgs.printHelp(System.out)
-        else
-            runStandalone(programArgs)
+        // Run the appropriate program
+        if (server) {
+            // Run server on args
+            runServer(this)
+        } else {
+            // Print help if no files specified, otherwise run standalone
+            if (files.isEmpty() && !help)
+                printHelp(System.out)
+            else
+                runStandalone(this)
+        }
     }
 }
 

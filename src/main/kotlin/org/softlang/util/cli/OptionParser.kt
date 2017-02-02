@@ -8,7 +8,8 @@ import java.io.PrintStream
  */
 abstract class OptionParser(val args: Array<String>,
                             val name: String? = null,
-                            val description: String? = null) {
+                            val description: String? = null,
+                            val example: String? = null) {
     /**
      * All rules
      */
@@ -76,12 +77,15 @@ abstract class OptionParser(val args: Array<String>,
         parsed.filter { it.first !in keys }.map { it.second }
     }
 
-
-    fun printHelp(printStream: PrintStream) = printStream.apply {
+    /**
+     * Prints the help message to the given output stream.
+     * @param printStream The output to print to, defaults to stdout
+     */
+    fun printHelp(printStream: PrintStream = System.out) = printStream.apply {
 
         // Print title
         if (name != null) {
-            println("Name: $name")
+            println("$name")
             println()
         }
 
@@ -90,6 +94,18 @@ abstract class OptionParser(val args: Array<String>,
             println("Description:")
             println(description.indent("  "))
             println()
+        }
+
+        // Print program description
+        if (example != null) {
+            println("Example:")
+            println(example.indent("  "))
+            println()
+        }
+
+        // Prefix arguments
+        if (rules.isNotEmpty()) {
+            println("Arguments:")
         }
 
         // Print parser rules
@@ -116,9 +132,15 @@ abstract class OptionParser(val args: Array<String>,
                     // Prepare value
                     val value = when (rule) {
                         is OptionSingleDelegate<*> ->
-                            rule.default?.toString() ?: "VALUE"
+                            if (rule.flag)
+                                "(true|false)"
+                            else
+                                rule.default?.toString() ?: "VALUE"
                         is OptionListDelegate<*> ->
-                            rule.default?.toString() ?: "VALUE"
+                            if (rule.flag)
+                                "(true|false)"
+                            else
+                                rule.default?.toString() ?: "VALUE"
                         else -> error("Should never get here")
                     }
 
@@ -148,7 +170,7 @@ abstract class OptionParser(val args: Array<String>,
 
                     // If description present print description
                     if (description != null)
-                        print(description.indent("    "))
+                        println(description.indent("    "))
                     else
                         println("Handled but not specified any further."
                                 .indent("    "))
