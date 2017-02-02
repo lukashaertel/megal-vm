@@ -19,6 +19,10 @@ apply plugin: 'antlr'
 
 repositories {
     mavenCentral()
+
+    maven {
+        url 'https://dl.bintray.com/wasabifx/wasabifx/'
+    }
 }
 
 dependencies {
@@ -26,6 +30,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compile 'com.yuvalshavit:antlr-denter:1.1'
     compile 'org.json:json:20160810'
+    compile 'nl.komponents.kovenant:kovenant:3.3.0'
+    compile 'org.wasabifx:wasabi:0.3.120'
 
     antlr 'org.antlr:antlr4:4.5'
 
