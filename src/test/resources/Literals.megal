@@ -1,0 +1,6 @@
+module Main
+A b C
+C b A
+X b A
+    b C
+    b D
