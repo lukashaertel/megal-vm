@@ -54,6 +54,7 @@ EclipseResolver: Resolver
 SelectResolver: Resolver
     realizes "select"
     after BaseResolver
+    accepts "text/plain"
 
 // Dependent resolution of XML parsing with selection
 XMLSelectResolver: Resolver
@@ -65,7 +66,7 @@ XMLSelectResolver: Resolver
 
 // Piped resolution, in consecutive calls, the context is bound to the result of
 // the previous resolver.
-Company: Fragment = <file://company.xml>
+Company: Fragment = <file://company.xml | xml-select://document>
 
 // Member resolution, if an entry starts with "member-", instead of global
 // context, the value of the container is used, as if it was piped.
