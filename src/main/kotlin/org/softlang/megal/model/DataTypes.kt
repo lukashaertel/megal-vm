@@ -1,6 +1,7 @@
 package org.softlang.megal.model
 
 import org.antlr.v4.runtime.tree.ErrorNode
+import java.net.URI
 
 /**
  * Primary declaration.
@@ -64,6 +65,11 @@ data class Op(val operator: String) : Node
  * Data node.
  */
 data class Data(val data: Any?) : Node
+
+/**
+ * Literal node.
+ */
+data class Literal(val data: List<URI>) : Node
 
 /**
  * Module import with substitutions.

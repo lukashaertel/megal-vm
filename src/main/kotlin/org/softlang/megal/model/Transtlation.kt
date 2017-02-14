@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.tree.ErrorNode
 import org.json.JSONTokener
 import org.softlang.megal.grammar.MegalBaseVisitor
 import org.softlang.megal.grammar.MegalParser.*
+import org.softlang.megal.grammar.parseLiteral
 import org.softlang.util.firstnn
 import org.softlang.util.mapn
 import org.softlang.util.mapvisit
@@ -101,6 +102,13 @@ val toNode = object : MegalBaseVisitor<Node>() {
      */
     override fun visitJson(ctx: JsonContext) = Data(
             JSONTokener(ctx.text).nextValue())
+
+    /**
+     * Obtains a node from a literal value.
+     */
+    override fun visitLiteral(ctx: LiteralContext) = Literal(
+            parseLiteral(ctx.LITERAL().text)
+    )
 
     /**
      * Translate a parse error.

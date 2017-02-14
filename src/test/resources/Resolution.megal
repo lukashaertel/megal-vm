@@ -1,0 +1,72 @@
+module Main
+
+/**
+ * Binding, addressing, and nested navigation are handled by three core
+ * concepts. These are:
+ * - URIs (https://en.wikipedia.org/wiki/Uniform_Resource_Identifier)
+ * - Piping (https://en.wikipedia.org/wiki/Pipeline_(Unix))
+ * - Content-negotiation (https://en.wikipedia.org/wiki/Content_negotiation)
+ *
+ * Why URIs:
+ *   Well understood technology, versatile, easy to plug without MegaL related
+ *   knowledge.
+ *
+ * Why piping:
+ *   URIs address single "intrinsic" documents or locations (with fragments).
+ *   We want to talk about both documents itself and components thereof.
+ *   Piping can reuse the versatility of URIs and does not obfuscate "type"
+ *   information during navigation (nested URI is still a full URI).
+ *
+ * Why Content-negotiation:
+ *   Follow-up resolutions might desire different representations of a parent
+ *   document. MIME types are already present and there are documents
+ *   describing different formats. Using content negotiation, as it is
+ *   performed on web servers, plugins can adapt their output appropriately.
+ */
+
+// Resolution plugin
+Resolver < Technology
+
+// Resolution responsibility management
+after < Resolver * Resolver
+realizes < Resolver * Value
+accepts < Resolver * Value
+
+// Root resolver stub, implementations should at least return 'text/plain'
+// and/or 'application/octet-stream'.
+BaseResolver: Resolver
+
+// Basic URL resolution
+WebResolver: Resolver
+    realizes ["http", "https", "ftp", "file"]
+    implements BaseResolver
+
+// Platform specific resolution
+EclipseResolver: Resolver
+    realizes ["plugin", "platform"]
+    implements BaseResolver
+
+// Dependent resolution of selections
+SelectResolver: Resolver
+    realizes "select"
+    after BaseResolver
+
+// Dependent resolution of XML parsing with selection
+XMLSelectResolver: Resolver
+    realizes "xml-select"
+    after BaseResolver
+    after XMLSelectResolver
+    accepts "application/xml"
+    accepts "text/plain"
+
+// Piped resolution, in consecutive calls, the context is bound to the result of
+// the previous resolver.
+Company: Fragment = <file://company.xml>
+
+// Member resolution, if an entry starts with "member-", instead of global
+// context, the value of the container is used, as if it was piped.
+Employee : Fragment = <member-xml-select://company/employees/1>
+    partOf Company
+
+Salary : Fragment = <member-xml-select://salary>
+    partOf Employee

@@ -4,6 +4,7 @@ import org.junit.Test
 import org.junit.Assert.*
 import org.softlang.megal.grammar.MegalParser.*
 import org.softlang.megal.model.toDeclaration
+import java.net.URI
 
 /**
  * Checks if examples are covered and parsed correctly.
@@ -115,6 +116,30 @@ class ExampleCoverageTest {
         }
     }
 
+
+    @Test
+    fun coversLiterals() {
+        // This example covers literals and nested URLs
+        "Literals".loadInto {
+            declaration(0).statement().apply {
+                node(2).literal().apply {
+                    assertEquals(
+                            parseLiteral(LITERAL().text),
+                            listOf(URI.create("http://google.com")))
+                }
+            }
+
+            declaration(1).statement().apply {
+                node(2).literal().apply {
+                    assertEquals(
+                            parseLiteral(LITERAL().text),
+                            listOf(URI.create("file://file.txt"),
+                                    URI.create("select://lines?from=1&to=10"),
+                                    URI.create("json://name")))
+                }
+            }
+        }
+    }
 
     @Test
     fun coversModules() {

@@ -7,6 +7,7 @@ tokens { INDENT, DEDENT }
 // Setup the imports for the Denter Helper
 @lexer::header {
   import com.yuvalshavit.antlr4.DenterHelper;
+  import static org.softlang.megal.grammar.LiteralsHelperKt.acceptLiteral;
 }
 
 // Configure denter helper on new line
@@ -48,7 +49,7 @@ cont:
     node node;
 
 node:
-    (primary | tuple | json | op);
+    (primary | tuple | json | literal | op);
 
 primary:
     abstr? ID (obj | array | tuple)?;
@@ -59,6 +60,9 @@ abstr:
 tuple:
     '(' (node (',' node)*)? ')';
 
+literal:
+    LITERAL;
+
 op:
     '->' | ':->' | '<-' | '<-:' | '<->' | '<' | '>' | '=' | ':' | '<<' | '>>' |
      '|>>' | '|<<' | '>>|' | '<<|';
@@ -68,6 +72,10 @@ imports:
 
 substitution:
     ID 'sub' ID NL;
+
+// Nested URLs
+LITERAL:
+    '<' (~'>')* '>' {acceptLiteral(getText())}?;
 
 // Qualified identifier
 ID: FRAG ('.' FRAG)*;
