@@ -27,9 +27,13 @@ module Main
 // Resolution plugin
 Resolver < Technology
 
-// Resolution responsibility management
+// Resolution defined as piped after another resolution
 after < Resolver * Resolver
+
+// Resolution responsible for certain URI schemas
 realizes < Resolver * Value
+
+// Resolution accepts some form of content, as defined by MIME types
 accepts < Resolver * Value
 
 // Root resolver stub, implementations should at least return 'text/plain'
