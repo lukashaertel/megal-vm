@@ -1,7 +1,7 @@
 module Main
 
 /**
- * Binding, addressing, and nested navigation are handled by three core
+ * Binding, addressing, and nested navigation are type by three core
  * concepts. These are:
  * - URIs (https://en.wikipedia.org/wiki/Uniform_Resource_Identifier)
  * - Piping (https://en.wikipedia.org/wiki/Pipeline_(Unix))
