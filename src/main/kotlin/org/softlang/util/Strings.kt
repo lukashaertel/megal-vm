@@ -23,9 +23,3 @@ infix fun String?.ncat(next: String?) = when {
     next == null -> null
     else -> "$this$next"
 }
-
-fun String?.toNull() = when (this) {
-    null -> null
-    "" -> null
-    else -> this
-}
