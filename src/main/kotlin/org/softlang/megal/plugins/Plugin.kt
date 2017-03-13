@@ -1,8 +1,8 @@
 package org.softlang.megal.plugins
 
 import org.softlang.megal.content.Content
-import org.softlang.megal.content.by
-import org.softlang.megal.content.from
+//import org.softlang.megal.content.by
+//import org.softlang.megal.content.from
 import java.io.InputStreamReader
 import java.net.URI
 
@@ -93,42 +93,42 @@ inline fun evalBy(crossinline method: (Content) -> Content) =
             override fun eval(content: Content) = method(content)
         }
 
-fun main(args: Array<String>) {
-    val httpr = navRootBy {
-        // Cast to URL, open a connection
-        it.toURL().openConnection().let { connection ->
-            // Read or find character set
-            val encoding by lazy {
-                connection.contentEncoding ?: connection.contentType
-                        .substringAfter("charset=").substringBefore(";")
-            }
-
-            if (connection.contentType.startsWith("text/"))
-            // If content type supplied starts with text, interpret as text
-                connection.contentType.substringBefore(";") by {
-                    connection
-                            .getInputStream()
-                            .reader(charset(encoding))
-                            .use(InputStreamReader::readText)
-                }
-            else
-            // Otherwise interpret as bytes
-                connection.contentType.substringBefore(";") by {
-                    connection
-                            .getInputStream()
-                            .use {
-                                it.readBytes(connection.contentLength)
-                            }
-                }
-        }
-
-    }
-
-    val x = httpr["https://www.google.de"]
-    println(x.types)
-    println(x["text/html"])
-
-    val y = httpr["http://s.4cdn.org/image/title/60.jpg"]
-    println(y.types)
-    println(y["image/jpeg"])
-}
+//fun main(args: Array<String>) {
+//    val httpr = navRootBy {
+//        // Cast to URL, open a connection
+//        it.toURL().openConnection().let { connection ->
+//            // Read or find character set
+//            val encoding by lazy {
+//                connection.contentEncoding ?: connection.contentType
+//                        .substringAfter("charset=").substringBefore(";")
+//            }
+//
+//            if (connection.contentType.startsWith("text/"))
+//            // If content type supplied starts with text, interpret as text
+//                connection.contentType.substringBefore(";") by {
+//                    connection
+//                            .getInputStream()
+//                            .reader(charset(encoding))
+//                            .use(InputStreamReader::readText)
+//                }
+//            else
+//            // Otherwise interpret as bytes
+//                connection.contentType.substringBefore(";") by {
+//                    connection
+//                            .getInputStream()
+//                            .use {
+//                                it.readBytes(connection.contentLength)
+//                            }
+//                }
+//        }
+//
+//    }
+//
+//    val x = httpr["https://www.google.de"]
+//    println(x.types)
+//    println(x["text/html"])
+//
+//    val y = httpr["http://s.4cdn.org/image/title/60.jpg"]
+//    println(y.types)
+//    println(y["image/jpeg"])
+//}
