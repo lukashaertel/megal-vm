@@ -159,6 +159,25 @@ infix fun Content.union(other: Content) = Content(
         providers union other.providers,
         adapters union other.adapters)
 
+/**
+ * Implements a singleton content by a provider.
+ */
+infix fun <T : Any> Type<T>.by(get: () -> T) =
+        Content(setOf(Provider(this, get)), emptySet())
+
+/**
+ * Implements a singleton content by a provider using the reified type argument.
+ */
+inline infix fun <reified T : Any> Mime.by(noinline get: () -> T) =
+        Type(this, T::class) by get
+
+/**
+ * Implements a singleton content by a provider using the reified type argument.
+ */
+inline infix fun <reified T : Any> String.by(noinline get: () -> T) =
+        parseMime(this) by get
+
+
 fun printByteArray(ba: ByteArray) {
     println(ba.joinToString { "$it" })
 }

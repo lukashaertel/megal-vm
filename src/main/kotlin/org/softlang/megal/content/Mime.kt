@@ -28,6 +28,14 @@ data class Mime(
     val lifted get() = Mime(top, tree, "*", suffix, parameters)
 
     /**
+     * Parses the parameters by simple string split.
+     */
+    val parsedParameters get() = parameters
+            ?.split(' ')
+            ?.associate { it.substringBefore('=') to it.substringAfter('=') }
+            ?: emptyMap()
+
+    /**
      * Removes parameters from the MIME type
      */
     val unparameterized get() = Mime(top, tree, sub, suffix, null)
