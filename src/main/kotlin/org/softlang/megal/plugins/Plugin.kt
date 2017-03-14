@@ -14,13 +14,13 @@ interface Plugin
 /**
  * Root navigation plugin, resolves root URI to content.
  */
-abstract class NavRootPlugin : Plugin {
+interface  BaseResolver : Plugin {
     /**
      * Initializes root navigation.
      * @param uri The root URI
      * @return Returns resolved content
      */
-    abstract operator fun get(uri: URI): Content
+    operator fun get(uri: URI): Content
 
     /**
      * Initializes root navigation.
@@ -35,15 +35,15 @@ abstract class NavRootPlugin : Plugin {
  * @param method The implementation
  * @return Returns a new root navigation plugin
  */
-inline fun navRootBy(crossinline method: (URI) -> Content) =
-        object : NavRootPlugin() {
+inline fun baseBy(crossinline method: (URI) -> Content) =
+        object : BaseResolver {
             override fun get(uri: URI) = method(uri)
         }
 
 /**
  * Nested navigation plugin, resolves navigating URI in a given context.
  */
-interface NavAfterPlugin : Plugin {
+interface NestedResolver : Plugin {
     /**
      * Navigates to the [uri] in a given [context].
      * @param uri The nested URI
@@ -66,8 +66,8 @@ interface NavAfterPlugin : Plugin {
  * @param method The implementation
  * @return Returns a new nested navigation plugin
  */
-inline fun navAfterBy(crossinline method: (URI, Content) -> Content) =
-        object : NavAfterPlugin {
+inline fun nestedBy(crossinline method: (URI, Content) -> Content) =
+        object : NestedResolver {
             override fun get(uri: URI, context: Content) = method(uri, context)
         }
 
@@ -92,51 +92,3 @@ inline fun evalBy(crossinline method: (Content) -> Content) =
         object : EvalPlugin {
             override fun eval(content: Content) = method(content)
         }
-
-fun main(args: Array<String>) {
-    val httpr = navRootBy {
-        // Cast to URL, open a connection
-        it.toURL().openConnection().let { connection ->
-            val rawMime = parseMime(connection.contentType)
-            val mime = rawMime.unparameterized
-
-            when {
-            // Read text types with a given encoding as string
-                mime.top == "text" -> mime by {
-                    // Read or guess encoding
-                    val encoding = rawMime
-                            .parsedParameters
-                            .getOrDefault("charset", "UTF-8")
-
-                    // Read connection to end
-                    connection
-                            .getInputStream()
-                            .reader(charset(encoding))
-                            .use(InputStreamReader::readText)
-                }
-
-            // Read everything else as byte array
-                else -> mime by {
-                    connection
-                            .getInputStream()
-                            .use {
-                                it.readBytes(connection.contentLength)
-                            }
-                }
-            }
-        }
-
-    }
-
-    val x = httpr["https://www.google.de"]
-    println(x.availableTypes)
-    x.into("text/html") { s: String ->
-        println(s)
-    }
-
-    val y = httpr["http://s.4cdn.org/image/title/60.jpg"]
-    println(y.availableTypes)
-    y.into("image/jpeg") { s: ByteArray ->
-        s.joinToString { "$it" }
-    }
-}

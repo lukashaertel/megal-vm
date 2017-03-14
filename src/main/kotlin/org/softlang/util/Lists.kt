@@ -30,3 +30,7 @@ fun <E> List<E>.contains(item: E?) =
 val <E> List<E>.pairs: List<Pair<E, E>> get() = (1 until size)
         .map { get(it - 1) to get(it) }
 
+/**
+ * Decomposes the list as head and tail for pair variable assignments.
+ */
+val <E> List<E>.decomposed: Pair<E, List<E>> get() = first() to tail()

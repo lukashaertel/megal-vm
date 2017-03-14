@@ -11,8 +11,8 @@ import kotlin.reflect.KClass
  * @property adapters Set of all content adaptions.
  */
 class Content(
-        val providers: Set<Provider<*>>,
-        val adapters: Set<Adapter<*, *>>) {
+        val providers: Set<Provider<*>> = emptySet(),
+        val adapters: Set<Adapter<*, *>> = emptySet()) {
     /**
      * Direct content provision as map.
      */
@@ -81,10 +81,26 @@ class Content(
             .toSet()
 
     /**
+     * Lists all available mime types, this is not as specific as
+     * [availableTypes].
+     */
+    val availableMimes get() = availableTypes
+            .map { it.mime }
+            .toSet()
+
+    /**
      * List of all potentially available types in this content.
      */
     val potentialTypes get() = providers.map { it.type } union
             adapters.map { it.dst }
+
+    /**
+     * List of all potentially available types in this content.
+     */
+    val potentialMimes get() = potentialTypes
+            .map { it.mime }
+            .toSet()
+
 
     /**
      * Returns the generator function for the given type.
@@ -158,6 +174,14 @@ class Content(
 infix fun Content.union(other: Content) = Content(
         providers union other.providers,
         adapters union other.adapters)
+
+/**
+ * Unifies the contents, overriding all types in [other] that are available
+ * in the receiver.
+ */
+infix fun Content.overrides(other: Content) = Content(
+        providers union other.providers.filter { it.type !in availableTypes },
+        adapters union other.adapters.filter { it.dst !in availableTypes })
 
 /**
  * Implements a singleton content by a provider.
