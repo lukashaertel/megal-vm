@@ -2,7 +2,7 @@ group 'org.softlang.megal'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.1.0-rc-91'
+    ext.kotlin_version = '1.1.1-eap-26'
 
     repositories {
         mavenCentral()

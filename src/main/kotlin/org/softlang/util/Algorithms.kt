@@ -209,7 +209,10 @@ fun <I, E, N> fwasp(
                 .filter { e -> n == sourceOf(e) }
                 .map(targetOf)
                 .toSet()
-    }).mapKeys {
+    }).filterKeys {
+        // Some transitions have no satisfied initial nodes, skip those
+        unmapInitial.containsKey(it.first)
+    }.mapKeys {
         // Unmap key origin and target
         unmapInitial.getValue(it.key.first) to it.key.second
     }.mapValues {

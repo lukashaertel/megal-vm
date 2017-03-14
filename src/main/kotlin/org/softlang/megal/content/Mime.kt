@@ -12,6 +12,10 @@ data class Mime(
         val sub: String,
         val suffix: String?,
         val parameters: String?) {
+    /**
+     * Secondary constructor initializing only mandatory fields.
+     */
+    constructor(top: String, sub: String) : this(top, null, sub, null, null)
 
     /**
      * True if the MIME type is generic
